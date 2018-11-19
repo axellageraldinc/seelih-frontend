@@ -9,8 +9,8 @@
             <section class="modal-card-body">
                 <div class="box" v-for="product in products" :key="product.id">
                     <p>{{ product.title }}</p>
-                    <p>Rp {{ product.price }}</p>
-                    <p>1 pcs</p>
+                    <p>Rp {{ product.price * product.totalInCart}}</p>
+                    <p>{{ product.totalInCart }} pcs</p>
                 </div>
             </section>
             <footer class="modal-card-foot">

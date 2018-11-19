@@ -22,7 +22,7 @@
           </div>
           <div class="card-footer btn-actions">
             <div class="card-footer-item">
-              <button class="button is-primary" v-if="!product.isAddedToCart" @click="addToCart(product.id)">Add to cart</button>
+              <button class="button is-primary" v-if="!product.isAddedToCart" @click="addToCart(product.id, 1)">Add to cart</button>
               <button class="button is-text" v-if="product.isAddedToCart" @click="removeFromCart(product.id)">Remove from cart</button>
               <router-link :to="{ path: '/product-detail', name: 'product-detail', params: { id: product.id } }">
                 <button class="button is-primary is-inverted">Details</button>
@@ -57,8 +57,11 @@ export default {
   },
 
   methods: {
-    addToCart(id) {
-      this.$store.commit('addToCart', id);
+    addToCart(id, total) {
+      this.$store.commit('addToCart', {
+        id: id,
+        total: total
+      });
     },
     removeFromCart(id) {
       this.$store.commit('removeFromCart', id);

@@ -11,11 +11,12 @@
         <span class="title is-5"><strong>Rp {{ product.price }}</strong></span>
         <div class="plus-minus-button">
           <i class="fa fa-minus button button-minus" v-on:click="minus"></i>
-          <input type="number" class="quantity" v-model="quantity"/>
+          <input type="number" class="quantity" :disabled="product.isAddedToCart" v-model="quantity"/>
           <i class="fa fa-plus button button-plus" v-on:click="plus"></i>
         </div>
         <div class="is-pulled-right">
-          <button class="button is-primary">Add to Cart</button>
+          <button class="button is-primary" v-if="!product.isAddedToCart" v-on:click="addToCart(product.id, quantity)">Add to Cart</button>
+          <button class="button is-primary" v-else v-on:click="removeFromCart(product.id)">Remove from Cart</button>
         </div>
       </div>
     </div>
@@ -43,18 +44,29 @@ export default {
     return {
       sectionTitle: 'Product Detail',
       product: this.$store.getters.findProductById(this.$props.id),
-      quantity: 0,
+      quantity: 1,
     };
   },
   methods: {
     plus: function() {
-      this.quantity += 1;
+      if (!this.product.isAddedToCart) {
+        this.quantity += 1;
+      }
     },
     minus: function() {
-      if (this.quantity > 0) {
+      if (this.quantity > 1 && !this.product.isAddedToCart) {
         this.quantity -= 1;
       }
-    }
+    },
+    addToCart: function(id, total) {
+      this.$store.commit('addToCart', {
+        id: id,
+        total: total
+      });
+    },
+    removeFromCart(id) {
+      this.$store.commit('removeFromCart', id);
+    },
   }
 };
 </script>

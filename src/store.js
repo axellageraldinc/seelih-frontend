@@ -13,7 +13,8 @@ export default new Vuex.Store({
         price: 50000,
         ratings: 3,
         reviews: 5,
-        isAddedToCart: false
+        isAddedToCart: false,
+        totalInCart: 0
       },
       {
         id: 2,
@@ -22,7 +23,8 @@ export default new Vuex.Store({
         price: 35000,
         ratings: 5,
         reviews: 10,
-        isAddedToCart: false
+        isAddedToCart: false,
+        totalInCart: 0
       },
       {
         id: 3,
@@ -31,7 +33,8 @@ export default new Vuex.Store({
         price: 110000,
         ratings: 2,
         reviews: 3,
-        isAddedToCart: false
+        isAddedToCart: false,
+        totalInCart: 0
       },
       {
         id: 4,
@@ -40,7 +43,8 @@ export default new Vuex.Store({
         price: 50000,
         ratings: 1,
         reviews: 0,
-        isAddedToCart: false
+        isAddedToCart: false,
+        totalInCart: 0
       },
       {
         id: 5,
@@ -49,7 +53,8 @@ export default new Vuex.Store({
         price: 35000,
         ratings: 4,
         reviews: 2,
-        isAddedToCart: false
+        isAddedToCart: false,
+        totalInCart: 0
       },
       {
         id: 6,
@@ -58,7 +63,8 @@ export default new Vuex.Store({
         price: 110000,
         ratings: 5,
         reviews: 1,
-        isAddedToCart: false
+        isAddedToCart: false,
+        totalInCart: 0
       },
       {
         id: 7,
@@ -67,7 +73,8 @@ export default new Vuex.Store({
         price: 50000,
         ratings: 5,
         reviews: 7,
-        isAddedToCart: false
+        isAddedToCart: false,
+        totalInCart: 0
       },
       {
         id: 8,
@@ -76,7 +83,8 @@ export default new Vuex.Store({
         price: 35000,
         ratings: 3,
         reviews: 0,
-        isAddedToCart: false
+        isAddedToCart: false,
+        totalInCart: 0
       },
       {
         id: 9,
@@ -85,7 +93,8 @@ export default new Vuex.Store({
         price: 110000,
         ratings: 4,
         reviews: 2,
-        isAddedToCart: false
+        isAddedToCart: false,
+        totalInCart: 0
       },
     ],
   },
@@ -102,10 +111,11 @@ export default new Vuex.Store({
   },
   
   mutations: {
-    addToCart: (state, id) => {
+    addToCart: (state, data) => {
       state.products.forEach(element => {
-        if (id === element.id) {
+        if (data.id === element.id) {
           element.isAddedToCart = true;
+          element.totalInCart = Number(data.total);
         }
       });
     },
@@ -113,6 +123,7 @@ export default new Vuex.Store({
       state.products.forEach(element => {
         if (id === element.id) {
           element.isAddedToCart = false;
+          element.totalInCart = 0;
         }
       });
     }

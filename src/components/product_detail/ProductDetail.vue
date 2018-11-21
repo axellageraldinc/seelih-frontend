@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import { homeUrl } from '../../helper.js';
 const axios = require('axios');
 
 export default {
@@ -50,7 +51,7 @@ export default {
     };
   },
   mounted() {
-    axios.get('http://localhost:8080/api/products/' + this.$props.id)
+    axios.get(homeUrl + 'api/products/' + this.$props.id)
       .then((response) => {
         this.product = response.data.Data;
       });

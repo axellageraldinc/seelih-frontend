@@ -36,6 +36,7 @@
 
 <script>
 import ProductDetail from '../product_detail/ProductDetail';
+import { homeUrl } from '../../helper.js';
 
 const axios = require('axios');
 
@@ -54,7 +55,7 @@ export default {
   },
 
   mounted() {
-    axios.get('http://localhost:8080/api/products')
+    axios.get(homeUrl + 'api/products')
       .then((response) => {
         let products = response.data.Data.filter(el => {
           if (this.$store.getters.findProductById(el.Id)) {

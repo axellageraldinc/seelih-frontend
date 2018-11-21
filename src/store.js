@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { homeUrl } from './helper';
 const axios = require('axios');
 
 Vue.use(Vuex);
@@ -8,69 +9,8 @@ export default new Vuex.Store({
   state: {
     isLoggedIn: !!localStorage.getItem('isLoggedIn'),
     errorMessage: null,
-    products: []
-    // products: [
-    //   {
-    //     id: 1,
-    //     title: 'Product 1',
-    //     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-    //     price: 50000,
-    //     ratings: 3,
-    //     reviews: 5,
-    //     isAddedToCart: false,
-    //     totalInCart: 0
-    //   },
-    //   {
-    //     id: 2,
-    //     title: 'Product 2',
-    //     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-    //     price: 35000,
-    //     ratings: 5,
-    //     reviews: 10,
-    //     isAddedToCart: false,
-    //     totalInCart: 0
-    //   },
-    //   {
-    //     id: 3,
-    //     title: 'Product 3',
-    //     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-    //     price: 110000,
-    //     ratings: 2,
-    //     reviews: 3,
-    //     isAddedToCart: false,
-    //     totalInCart: 0
-    //   },
-    //   {
-    //     id: 4,
-    //     title: 'Product 4',
-    //     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-    //     price: 50000,
-    //     ratings: 1,
-    //     reviews: 0,
-    //     isAddedToCart: false,
-    //     totalInCart: 0
-    //   },
-    //   {
-    //     id: 5,
-    //     title: 'Product 5',
-    //     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-    //     price: 35000,
-    //     ratings: 4,
-    //     reviews: 2,
-    //     isAddedToCart: false,
-    //     totalInCart: 0
-    //   },
-    //   {
-    //     id: 6,
-    //     title: 'Product 6',
-    //     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-    //     price: 110000,
-    //     ratings: 5,
-    //     reviews: 1,
-    //     isAddedToCart: false,
-    //     totalInCart: 0
-      // }
-    // ],
+    products: [],
+    userLoggedIn: {}
   },
   
   getters: {
@@ -81,6 +21,9 @@ export default new Vuex.Store({
     },
     findProductById: (state) => (id) => {
       return state.products.find(product => product.Id == id);
+    },
+    isUserLoggedIn: (state) => {
+      return state.isLoggedIn;
     }
   },
   
@@ -99,21 +42,37 @@ export default new Vuex.Store({
     },
     setErrorMessage: (state, errorMessage) => {
       state.errorMessage = errorMessage;
+    },
+    setUserLoggedIn: (state, data) => {
+      state.isLoggedIn = data.isLoggedIn;
+      state.userLoggedIn = data.user;
     }
   },
   
   actions: {
     userLogin({ commit }, data) {
-      axios.post('http://localhost:8080/login')
-        .then((response) => {
+      axios.post(homeUrl + 'api/users/login', {
+        Email: data.email,
+        Password: data.password
+      }).then((response) => {
+          console.log(response)
           if (response.data.ErrorCode != 100) {
-            localStorage.setItem('isLoggedIn', true);
+            commit('setErrorMessage', "");
+            commit('setUserLoggedIn', {
+              isLoggedIn: true,
+              user: response.data.Data
+            });
+            localStorage.setItem('isLoggedIn', 'true');
           } else {
             commit('setErrorMessage', "Email and Password doesn't match");
           }
         }).catch((response) => {
           console.log(response);
         })
+    },
+    userLogout({ commit }) {
+      localStorage.removeItem('isLoggedIn');
+      commit('setUserLoggedIn', { isLoggedIn: false });
     }
   },
 });

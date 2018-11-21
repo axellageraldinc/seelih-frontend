@@ -27,12 +27,17 @@
           <div class="shopping-cart" @click="showCheckoutModal">
             <i class="fa fa-shopping-cart"></i> {{ numProductsAdded }}
           </div>
-          <div class="buttons">
+          <div v-if="!isLoggedIn" class="buttons">
             <a class="button is-primary" @click="showRegistrationModal">
               <strong>Sign up</strong>
             </a>
             <a class="button is-light" @click="showLoginModal">
               Log in
+            </a>
+          </div>
+          <div v-else class="buttons">
+            <a class="button is-primary" @click="logout">
+              <strong>Log out</strong>
             </a>
           </div>
         </div>
@@ -56,13 +61,16 @@
       return {
         isLoginActive: false,
         isRegistrationActive: false,
-        isCheckoutActive: false
+        isCheckoutActive: false,
       }
     },
 
     computed: {
       numProductsAdded () {
         return this.$store.getters.productsAdded.length;
+      },
+      isLoggedIn() {
+        return this.$store.getters.isUserLoggedIn;
       }
     },
 
@@ -82,6 +90,9 @@
       showCheckoutModal () {
         this.isCheckoutActive = true;
       },
+      logout() {
+        this.$store.dispatch('userLogout');
+      }
     }
   };
 </script>

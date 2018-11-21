@@ -7,6 +7,7 @@
           <button class="delete" aria-label="close" @click="closeModal"></button>
         </header>
         <section class="modal-card-body">
+          <p>{{ errorMessage }}</p>
           <div class="field">
             <p class="control has-icons-left has-icons-right">
               <input class="input" type="text" placeholder="Full Name" v-model="input.fullName">
@@ -72,7 +73,8 @@ export default {
               password: '',
               phone: '',
               fullAddress: ''
-            }
+            },
+            errorMessage: ''
         }
     },
 
@@ -81,15 +83,20 @@ export default {
       this.$emit('update:isRegistrationActive', false);
     },
     register() {
-      axios.post('http://localhost:8080/api/register', {
+      axios.post('http://localhost:8080/api/users/register', {
         Email: this.input.email,
         Password: this.input.password,
         Fullname: this.input.fullName,
         Phone: this.input.phone,
         FullAddress: this.input.fullAddress,
         CityCode: 1
-      }).then(function(response) {
+      }).then((response) => {
         console.log(response);
+        if (response.data.ErrorCode != 111) {
+          this.closeModal();
+        } else {
+          this.errorMessage = 'Email has been used'; 
+        }
       });
     }
   }

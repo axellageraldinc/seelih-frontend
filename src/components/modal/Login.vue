@@ -7,6 +7,7 @@
                 <button class="delete" aria-label="close" @click="closeModal"></button>
             </header>
             <section class="modal-card-body">
+                <p>{{ errorMessage }}</p>
                 <div class="field">
                     <p class="control has-icons-left has-icons-right">
                     <input class="input" type="email" placeholder="Email" v-model="input.email">
@@ -45,6 +46,23 @@ export default {
             input: { 
                 email: '',
                 password: ''
+            },
+        }
+    },
+
+    computed: {
+        errorMessage: function() {
+           return this.$store.state.errorMessage; 
+        },
+        isLoggedId: function() {
+            return this.$store.getters.isUserLoggedIn;
+        }
+    },
+
+    watch: {
+        isLoggedId(newStatus, oldStatus) {
+            if (newStatus) {
+                this.closeModal();
             }
         }
     },
@@ -54,13 +72,9 @@ export default {
             this.$emit('update:isLoginActive', false);
         },
         login() {
-            axios.post('http://localhost:8080/api/login', {
-                Email: this.email,
-                Password: this.password
-            }).then(function(response) {
-                console.log(response);
-            }).catch(function(error) {
-                console.log(error);
+            this.$store.dispatch('userLogin', {
+                email: this.input.email,
+                password: this.input.password
             });
         }
     }

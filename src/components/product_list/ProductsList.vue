@@ -37,6 +37,8 @@
 <script>
 import ProductDetail from '../product_detail/ProductDetail';
 
+const axios = require('axios');
+
 export default {
   name: 'products-list',
   
@@ -50,6 +52,12 @@ export default {
     };
   },
 
+  mounted() {
+    axios.get('http://localhost:8080/api/products')
+      .then(function(response) {
+        console.log(response.Data);
+      });
+  },
   computed: {
     products () {
       return this.$store.state.products;

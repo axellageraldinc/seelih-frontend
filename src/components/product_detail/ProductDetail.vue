@@ -37,6 +37,8 @@
 </template>
 
 <script>
+const axios = require('axios');
+
 export default {
   name: 'product-detail',
   props: ['id', 'img', 'price', 'description'],
@@ -46,6 +48,12 @@ export default {
       product: this.$store.getters.findProductById(this.$props.id),
       quantity: 1,
     };
+  },
+  mounted() {
+    axios.get('http://localhost:8080/api/products' + this.$props.id)
+      .then(function(response) {
+        // this.product = response.Data;
+      });
   },
   methods: {
     plus: function() {

@@ -9,7 +9,7 @@
             <section class="modal-card-body">
                 <div class="field">
                     <p class="control has-icons-left has-icons-right">
-                    <input class="input" type="email" placeholder="Email">
+                    <input class="input" type="email" placeholder="Email" v-model="input.email">
                     <span class="icon is-small is-left">
                         <i class="fas fa-envelope"></i>
                     </span>
@@ -17,7 +17,7 @@
                 </div>
                 <div class="field">
                     <p class="control has-icons-left">
-                    <input class="input" type="password" placeholder="Password">
+                    <input class="input" type="password" placeholder="Password" v-model="input.password">
                     <span class="icon is-small is-left">
                         <i class="fas fa-lock"></i>
                     </span>
@@ -25,13 +25,15 @@
                 </div>
             </section>
             <footer class="modal-card-foot">
-                <button class="button is-success">{{ primaryBtnLabel }}</button>
+                <button class="button is-success" @click="login()">{{ primaryBtnLabel }}</button>
             </footer>
         </div>
     </div>
 </template>
 
 <script>
+const axios = require('axios');
+
 export default {
     name: 'login-component',
     props: ['isLoginActive'],
@@ -39,13 +41,27 @@ export default {
     data () {
         return {
             modalTitle: 'Log in',
-            primaryBtnLabel: 'Log in'
+            primaryBtnLabel: 'Log in',
+            input: { 
+                email: '',
+                password: ''
+            }
         }
     },
 
     methods: {
         closeModal () {
             this.$emit('update:isLoginActive', false);
+        },
+        login() {
+            axios.post('http://localhost:8080/api/login', {
+                Email: this.email,
+                Password: this.password
+            }).then(function(response) {
+                console.log(response);
+            }).catch(function(error) {
+                console.log(error);
+            });
         }
     }
 }

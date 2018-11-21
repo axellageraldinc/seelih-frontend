@@ -7,7 +7,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    isLoggedIn: !!localStorage.getItem('isLoggedIn'),
+    isLoggedIn: !!localStorage.getItem('userId'),
     errorMessage: null,
     products: [],
     userLoggedIn: {}
@@ -24,6 +24,9 @@ export default new Vuex.Store({
     },
     isUserLoggedIn: (state) => {
       return state.isLoggedIn;
+    },
+    userLoggedIn: (state) => {
+      return state.userLoggedIn;
     }
   },
   
@@ -40,11 +43,17 @@ export default new Vuex.Store({
         }
       });
     },
+    removeAllProductInCart: (state) => {
+      state.products = [];
+    },
     setErrorMessage: (state, errorMessage) => {
       state.errorMessage = errorMessage;
     },
     setUserLoggedIn: (state, data) => {
       state.isLoggedIn = data.isLoggedIn;
+      state.userLoggedIn = data.user;
+    },
+    setUserData: (state, data) => {
       state.userLoggedIn = data.user;
     }
   },
@@ -62,7 +71,7 @@ export default new Vuex.Store({
               isLoggedIn: true,
               user: response.data.Data
             });
-            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userId', response.data.Data.Id.toString());
           } else {
             commit('setErrorMessage', "Email and Password doesn't match");
           }
@@ -71,8 +80,19 @@ export default new Vuex.Store({
         })
     },
     userLogout({ commit }) {
-      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('userId');
       commit('setUserLoggedIn', { isLoggedIn: false });
+    },
+    getUserLoggedInData({ commit }) {
+      let userId = localStorage.getItem('userId');
+      axios.get(homeUrl + 'api/users/' + userId)
+        .then((response) => {
+          if (response.data.ErrorCode == 0) {
+            commit('setUserData', {
+              user: response.data.Data
+            });
+          }
+        });
     }
   },
 });

@@ -8,8 +8,8 @@
             </header>
             <section class="modal-card-body">
                 <div class="box" v-for="product in products" :key="product.id">
-                    <p>{{ product.title }}</p>
-                    <p>Rp {{ product.price * product.totalInCart}}</p>
+                    <p>{{ product.Name }}</p>
+                    <p>Rp {{ product.PricePerItemPerDay * product.totalInCart}}</p>
                     <p>{{ product.totalInCart }} pcs</p>
                 </div>
             </section>

@@ -85,14 +85,16 @@ export default new Vuex.Store({
     },
     getUserLoggedInData({ commit }) {
       let userId = localStorage.getItem('userId');
-      axios.get(homeUrl + 'api/users/' + userId)
-        .then((response) => {
-          if (response.data.ErrorCode == 0) {
-            commit('setUserData', {
-              user: response.data.Data
-            });
-          }
-        });
+      if (userId) {
+        axios.get(homeUrl + 'api/users/' + userId)
+          .then((response) => {
+            if (response.data.ErrorCode == 0) {
+              commit('setUserData', {
+                user: response.data.Data
+              });
+            }
+          });
+      }
     }
   },
 });

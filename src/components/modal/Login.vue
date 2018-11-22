@@ -7,7 +7,7 @@
                 <button class="delete" aria-label="close" @click="closeModal"></button>
             </header>
             <section class="modal-card-body">
-                <p>{{ errorMessage }}</p>
+                <p class="error-message">{{ errorMessage }}</p>
                 <div class="field">
                     <p class="control has-icons-left has-icons-right">
                     <input class="input" type="email" placeholder="Email" v-model="input.email">
@@ -69,6 +69,7 @@ export default {
 
     methods: {
         closeModal () {
+            this.$store.commit('setErrorMessage', '');
             this.$emit('update:isLoginActive', false);
         },
         login() {
@@ -80,4 +81,11 @@ export default {
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.error-message {
+    text-align: center;
+    color: rgb(219, 36, 36);
+}
+</style>
 

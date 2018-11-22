@@ -28,7 +28,7 @@
             <i class="fa fa-shopping-cart"></i> {{ numProductsAdded }}
           </div>
           <div class="user-name">
-            <p>{{ userName }}</p>
+            <p>{{ userMessage }}</p>
           </div>
           <div v-if="!isLoggedIn" class="buttons">
             <a class="button is-primary" @click="showRegistrationModal">
@@ -75,8 +75,8 @@
       isLoggedIn() {
         return this.$store.getters.isUserLoggedIn;
       },
-      userName() {
-        if (this.$store.getters.userLoggedIn) {
+      userMessage() {
+        if (this.isLoggedIn) {
           return 'Welcome, ' + this.$store.getters.userLoggedIn.Fullname;
         } else {
           return '';

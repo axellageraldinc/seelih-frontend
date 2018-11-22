@@ -28,7 +28,9 @@
             <i class="fa fa-shopping-cart"></i> {{ numProductsAdded }}
           </div>
           <div class="user-name">
-            <p>{{ userMessage }}</p>
+            <router-link v-if="isLoggedIn" :to="{ path: '/user/profile', name: 'profile' }">
+              <a class="link-profile">{{ userMessage }}</a>
+            </router-link>
           </div>
           <div v-if="!isLoggedIn" class="buttons">
             <a class="button is-primary" @click="showRegistrationModal">
@@ -56,6 +58,7 @@
   import LoginModal from '../modal/Login';
   import RegistrationModal from '../modal/Registration';
   import CheckoutModal from '../modal/Checkout';
+  import Profile from '../profile/Profile';
 
   export default {
     name: 'header-component',
@@ -87,7 +90,8 @@
     components: {
       'login-modal-component': LoginModal,
       'registration-modal-component': RegistrationModal,
-      'checkout-modal-component': CheckoutModal
+      'checkout-modal-component': CheckoutModal,
+      'profile': Profile
     },
 
     methods: {
@@ -126,6 +130,8 @@
   }
   .user-name {
     margin-right: 23px;
+  }
+  .link-profile {
     color: white;
   }
 </style>

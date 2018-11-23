@@ -27,12 +27,22 @@
           <div class="shopping-cart" @click="showCheckoutModal">
             <i class="fa fa-shopping-cart"></i> {{ numProductsAdded }}
           </div>
-          <div class="buttons">
+          <div class="user-name">
+            <router-link v-if="isLoggedIn" :to="{ path: '/user/profile', name: 'profile' }" class="link-profile">
+              {{ userMessage }}
+            </router-link>
+          </div>
+          <div v-if="!isLoggedIn" class="buttons">
             <a class="button is-primary" @click="showRegistrationModal">
               <strong>Sign up</strong>
             </a>
             <a class="button is-light" @click="showLoginModal">
               Log in
+            </a>
+          </div>
+          <div v-else class="buttons">
+            <a class="button is-primary" @click="logout">
+              <strong>Log out</strong>
             </a>
           </div>
         </div>
@@ -48,6 +58,7 @@
   import LoginModal from '../modal/Login';
   import RegistrationModal from '../modal/Registration';
   import CheckoutModal from '../modal/Checkout';
+  import Profile from '../profile/Profile';
 
   export default {
     name: 'header-component',
@@ -56,20 +67,31 @@
       return {
         isLoginActive: false,
         isRegistrationActive: false,
-        isCheckoutActive: false
+        isCheckoutActive: false,
       }
     },
 
     computed: {
       numProductsAdded () {
         return this.$store.getters.productsAdded.length;
+      },
+      isLoggedIn() {
+        return this.$store.getters.isUserLoggedIn;
+      },
+      userMessage() {
+        if (this.isLoggedIn) {
+          return 'Welcome, ' + this.$store.getters.userLoggedIn.Fullname;
+        } else {
+          return '';
+        }
       }
     },
 
     components: {
       'login-modal-component': LoginModal,
       'registration-modal-component': RegistrationModal,
-      'checkout-modal-component': CheckoutModal
+      'checkout-modal-component': CheckoutModal,
+      'profile': Profile
     },
 
     methods: {
@@ -82,6 +104,9 @@
       showCheckoutModal () {
         this.isCheckoutActive = true;
       },
+      logout() {
+        this.$store.dispatch('userLogout');
+      }
     }
   };
 </script>
@@ -102,5 +127,11 @@
     right: 50px;
     color: #fff;
     cursor: pointer;
+  }
+  .user-name {
+    margin-right: 23px;
+  }
+  .link-profile {
+    color: white;
   }
 </style>

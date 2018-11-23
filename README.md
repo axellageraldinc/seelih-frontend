@@ -17,4 +17,4 @@ Seelih is a marketplace for renting daily things. Seelih (silih) comes from java
 2. Change your directory to this folder
 3. Type `npm install` to install dependencies
 4. Type `npm run serve` to run this project
-5. Open your browser and navigate to `http://localhost:8080/`
+5. Open your browser and navigate to `http://localhost:8090/`

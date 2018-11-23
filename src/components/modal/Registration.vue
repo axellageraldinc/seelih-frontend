@@ -48,6 +48,19 @@
               </span>
             </p>
           </div>
+          <div class="field">
+            <p class="control has-icons-left has-icons-right">
+              <select id="city" class="input" v-model="input.city">
+                <option value="" disabled hidden class="placeholder">Select your city</option>
+                <option v-for="(city, index) in cities" :key="index" v-bind:value="city.Id">
+                  {{ city.Name }}
+                </option>
+              </select>
+              <span class="icon is-small is-left">
+                <i class="fas fa-home"></i>
+              </span>
+            </p>
+          </div>
         </section>
         <footer class="modal-card-foot">
           <button class="button is-success" @click="register()">{{ primaryBtnLabel }}</button>
@@ -57,29 +70,40 @@
 </template>
 
 <script>
+import { homeUrl } from '../../helper';
 const axios = require('axios');
 
 export default {
   name: 'registration-component',
   props: ['isRegistrationActive'],
 
-  data () {
-        return {
-            modalTitle: 'Sign up',
-            primaryBtnLabel: 'Sign up',
-            input: {
-              fullName: '',
-              email: '',
-              password: '',
-              phone: '',
-              fullAddress: ''
-            },
-            errorMessage: ''
-        }
-    },
+  data() {
+    return {
+      modalTitle: 'Sign up',
+      primaryBtnLabel: 'Sign up',
+      input: {
+        fullName: '',
+        email: '',
+        password: '',
+        phone: '',
+        fullAddress: '',
+        city: ''
+      },
+      errorMessage: '',
+      cities: []
+    }
+  },
+
+  mounted() {
+    axios.get(homeUrl + 'api/cities')
+      .then((response) => {
+        console.log(response);
+        this.cities = response.data.Data;
+      });
+  },
 
   methods: {
-    closeModal () {
+    closeModal() {
       this.errorMessage = '';
       this.$emit('update:isRegistrationActive', false);
     },
@@ -90,13 +114,13 @@ export default {
         Fullname: this.input.fullName,
         Phone: this.input.phone,
         FullAddress: this.input.fullAddress,
-        CityCode: 1
+        CityCode: Number(this.input.city)
       }).then((response) => {
         console.log(response);
         if (response.data.ErrorCode != 111) {
           this.closeModal();
         } else {
-          this.errorMessage = 'Email has been used'; 
+          this.errorMessage = 'Email has been used';
         }
       });
     }
@@ -109,5 +133,12 @@ export default {
     text-align: center;
     color: rgb(219, 36, 36);
 }
+select {
+  -webkit-appearance: menulist-button;
+  color: #a9a9a9;
+  padding-left: 2em !important;
+}
+option:not(:first-of-type) {
+  color: black;
+}
 </style>
-

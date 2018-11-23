@@ -28,8 +28,8 @@
             <i class="fa fa-shopping-cart"></i> {{ numProductsAdded }}
           </div>
           <div class="user-name">
-            <router-link v-if="isLoggedIn" :to="{ path: '/user/profile', name: 'profile' }">
-              <a class="link-profile">{{ userMessage }}</a>
+            <router-link v-if="isLoggedIn" :to="{ path: '/user/profile', name: 'profile' }" class="link-profile">
+              {{ userMessage }}
             </router-link>
           </div>
           <div v-if="!isLoggedIn" class="buttons">

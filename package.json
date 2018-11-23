@@ -1,17 +1,17 @@
 {
-  "name": "vuemmerce",
+  "name": "seelih",
   "version": "0.5.5",
-  "description": "Ecommerce template made with vue.js",
-  "author": "ivan lori <ivan.lori@protonmail.com>",
+  "description": "Vue.js for Web App Development",
+  "author": "almanalfaruq <alman.alfaruq@gmail.com>",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --port 8090",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ivanlori/Vuemmerce.git"
+    "url": "git+https://github.com/axellageraldinc/seelih-frontend.git"
   },
   "keywords": [
     "css",
@@ -25,10 +25,14 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "ajv": "^6.5.5",
+    "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
     "babel-runtime": "^6.26.0",
     "bulma": "^0.7.2",
+    "element-ui": "^2.4.11",
     "vue": "^2.5.17",
+    "vue-data-tables": "^3.4.4",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },

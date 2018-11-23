@@ -7,9 +7,10 @@
                 <button class="delete" aria-label="close" @click="closeModal"></button>
             </header>
             <section class="modal-card-body">
+                <p class="error-message">{{ errorMessage }}</p>
                 <div class="field">
                     <p class="control has-icons-left has-icons-right">
-                    <input class="input" type="email" placeholder="Email">
+                    <input class="input" type="email" placeholder="Email" v-model="input.email">
                     <span class="icon is-small is-left">
                         <i class="fas fa-envelope"></i>
                     </span>
@@ -17,7 +18,7 @@
                 </div>
                 <div class="field">
                     <p class="control has-icons-left">
-                    <input class="input" type="password" placeholder="Password">
+                    <input class="input" type="password" placeholder="Password" v-model="input.password">
                     <span class="icon is-small is-left">
                         <i class="fas fa-lock"></i>
                     </span>
@@ -25,13 +26,15 @@
                 </div>
             </section>
             <footer class="modal-card-foot">
-                <button class="button is-success">{{ primaryBtnLabel }}</button>
+                <button class="button is-success" @click="login()">{{ primaryBtnLabel }}</button>
             </footer>
         </div>
     </div>
 </template>
 
 <script>
+const axios = require('axios');
+
 export default {
     name: 'login-component',
     props: ['isLoginActive'],
@@ -39,15 +42,50 @@ export default {
     data () {
         return {
             modalTitle: 'Log in',
-            primaryBtnLabel: 'Log in'
+            primaryBtnLabel: 'Log in',
+            input: { 
+                email: '',
+                password: ''
+            },
+        }
+    },
+
+    computed: {
+        errorMessage: function() {
+           return this.$store.state.errorMessage; 
+        },
+        isLoggedId: function() {
+            return this.$store.getters.isUserLoggedIn;
+        }
+    },
+
+    watch: {
+        isLoggedId(newStatus, oldStatus) {
+            if (newStatus) {
+                this.closeModal();
+            }
         }
     },
 
     methods: {
         closeModal () {
+            this.$store.commit('setErrorMessage', '');
             this.$emit('update:isLoginActive', false);
+        },
+        login() {
+            this.$store.dispatch('userLogin', {
+                email: this.input.email,
+                password: this.input.password
+            });
         }
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.error-message {
+    text-align: center;
+    color: rgb(219, 36, 36);
+}
+</style>
 

@@ -3,19 +3,20 @@
     <div class="columns">
       <div class="column is-one-third">
         <figure class="levle-item image">
-          <img src="https://placeimg.com/400/200/any">
+          <img :src="product.ImageUrl" :alt="product.Name">
         </figure>
       </div>
       <div class="column is-two-third">
-        <h2 class="title is-4">{{ product.title }}</h2>
-        <span class="title is-5"><strong>Rp {{ product.price }}</strong></span>
+        <h2 class="title is-4">{{ product.Name }}</h2>
+        <span class="title is-5"><strong>Rp {{ product.PricePerItemPerDay }}</strong></span>
         <div class="plus-minus-button">
           <i class="fa fa-minus button button-minus" v-on:click="minus"></i>
-          <input type="number" class="quantity" v-model="quantity"/>
+          <input type="number" class="quantity" :disabled="isAddedToCart" v-model="quantity"/>
           <i class="fa fa-plus button button-plus" v-on:click="plus"></i>
         </div>
         <div class="is-pulled-right">
-          <button class="button is-primary">Add to Cart</button>
+          <button class="button is-primary" v-if="!isAddedToCart" v-on:click="addToCart(product, quantity)">Add to Cart</button>
+          <button class="button is-primary" v-else v-on:click="removeFromCart(product.Id)">Remove from Cart</button>
         </div>
       </div>
     </div>
@@ -23,38 +24,69 @@
     <div class="box__details row">
       <div class="box__details__description">
         <h3>Description</h3>
-        <p>{{ product.description }}</p>
+        <p>{{ product.Description }}</p>
       </div>
-      <div>
+      <!-- <div>
         <h3>Other Information</h3>
         <p class="other-details">
           Lorem ipsum dolor sit, amet consectetur adipisicing elit. Cumque aut nihil, nostrum, ea eius praesentium totam temporibus ratione dolore rerum, neque magni quia maiores blanditiis dignissimos fugiat perspiciatis numquam? Facere?
         </p>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script>
+import { homeUrl } from '../../helper.js';
+const axios = require('axios');
+
 export default {
   name: 'product-detail',
   props: ['id', 'img', 'price', 'description'],
   data: function() {
     return {
       sectionTitle: 'Product Detail',
-      product: this.$store.getters.findProductById(this.$props.id),
-      quantity: 0,
+      product: null,
+      quantity: 1,
     };
+  },
+  mounted() {
+    axios.get(homeUrl + 'api/products/' + this.$props.id)
+      .then((response) => {
+        this.product = response.data.Data;
+      });
+  },
+  computed: {
+      isAddedToCart: function() {
+        if (this.$store.getters.findProductById(this.$props.id)) {
+          return true; 
+        } else {
+          return false;
+        }
+      } 
   },
   methods: {
     plus: function() {
-      this.quantity += 1;
+      if (this.product.Quantity > this.quantity && !this.isAddedToCart) {
+        this.quantity += 1;
+      }
     },
     minus: function() {
-      if (this.quantity > 0) {
+      if (this.quantity > 1 && !this.isAddedToCart) {
         this.quantity -= 1;
       }
-    }
+    },
+    addToCart: function(product, total) {
+      this.$store.commit('addToCart', {
+        product: product,
+        total: total
+      });
+      this.$forceUpdate();
+    },
+    removeFromCart(id) {
+      this.$store.commit('removeFromCart', id);
+      this.$forceUpdate();
+    },
   }
 };
 </script>

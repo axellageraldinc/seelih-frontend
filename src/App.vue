@@ -17,5 +17,9 @@
       'header-component': Header,
       'footer-component': Footer
     },
+
+    mounted() {
+      this.$store.dispatch('getUserLoggedInData');
+    },
   };
 </script>

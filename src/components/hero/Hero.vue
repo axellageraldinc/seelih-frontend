@@ -6,7 +6,7 @@
             Seelih
           </h1>
           <h2 class="subtitle">
-            The product that you want to rent for, is here!!
+            The product that you want to rent for is here! Go check them out!!
           </h2>
         </div>
       </div>

@@ -82,6 +82,7 @@ export default new Vuex.Store({
     userLogout({ commit }) {
       localStorage.removeItem('userId');
       commit('setUserLoggedIn', { isLoggedIn: false });
+      window.location.replace('http://localhost:8090');
     },
     getUserLoggedInData({ commit }) {
       let userId = localStorage.getItem('userId');

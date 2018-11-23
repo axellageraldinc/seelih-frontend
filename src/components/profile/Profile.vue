@@ -12,7 +12,13 @@
             </router-link>
         </div> 
         <div class="main">
-            <h2 v-if="route == '/user/profile'">My Profile</h2>
+            <div v-if="route == '/user/profile'">
+                <h1 class="title">My Profile</h1>
+                <p>Name: {{ userLoggedIn.Fullname }}</p><br>
+                <p>Email: {{ userLoggedIn.Email }}</p><br>
+                <p>Phone: {{ userLoggedIn.Phone }}</p><br>
+                <p>Fulladdress: {{ userLoggedIn.Fulladdress }}</p><br>
+            </div>
             <router-view v-else></router-view>
         </div>
     </section>
@@ -39,12 +45,23 @@ export default {
     computed: {
         route: function() {
             return this.$route.path;
+        },
+        userLoggedIn: function() {
+            return this.$store.getters.userLoggedIn;
         }
     }
 }
 </script>
 
 <style lang="scss" scoped>
+.title {
+    font-size: 21px;
+    font-weight: bold;
+}
+.subtitle {
+    font-size: 15px;
+    font-weight: 500;
+}
 .profile {
     display: flex;
 }
@@ -53,7 +70,7 @@ export default {
     flex-direction: column;
     height: 100vh;
     min-width: 180px;
-    background-color: rgb(31, 144, 214);
+    background-color: rgb(81, 186, 252);
     overflow: auto;
     padding: 0;
     margin: 0;
@@ -74,6 +91,7 @@ export default {
 }
 .main {
     padding: 15px;
+    width: 100vw;
 }
 </style>
 

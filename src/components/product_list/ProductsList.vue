@@ -55,16 +55,13 @@ export default {
   },
 
   mounted() {
-    axios.get(homeUrl + 'api/products')
-      .then((response) => {
-        let products = response.data.Data.filter(el => {
-          if (this.$store.getters.findProductById(el.Id)) {
-            el.isAddedToCart = true;
-            return el;
-          }
-        })
-        this.products = response.data.Data;
-      });
+    this.loadProducts();
+  },
+
+  watch: {
+    products: function(val) {
+      this.loadProducts();
+    }
   },
 
   methods: {
@@ -87,6 +84,18 @@ export default {
         ratingTag += '<i class="fa fa-star"></i>';
       }
       return ratingTag;
+    },
+    loadProducts() {
+      axios.get(homeUrl + 'api/products')
+        .then((response) => {
+          let products = response.data.Data.filter(el => {
+            if (this.$store.getters.findProductById(el.Id)) {
+              el.isAddedToCart = true;
+              return el;
+            }
+          })
+          this.products = response.data.Data;
+        });
     }
   }
 

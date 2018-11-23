@@ -65,12 +65,6 @@ export default {
         }
       } 
   },
-  // watch: {
-  //   isAddedToCart(newValue, oldValue) {
-  //     console.log(oldValue);
-  //     console.log(newValue);
-  //   }
-  // },
   methods: {
     plus: function() {
       if (this.product.Quantity > this.quantity && !this.isAddedToCart) {

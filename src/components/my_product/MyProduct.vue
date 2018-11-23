@@ -133,6 +133,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+section {
+    width: 50%;
+}
 .title {
     font-size: 21px;
     font-weight: bold;

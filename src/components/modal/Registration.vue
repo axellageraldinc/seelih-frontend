@@ -52,7 +52,7 @@
             <p class="control has-icons-left has-icons-right">
               <select id="city" class="input" v-model="input.city">
                 <option value="" disabled hidden class="placeholder">Select your city</option>
-                <option v-for="(city, index) in cities" :key="index" v-bind:value="city.Id">
+                <option v-for="(city, index) in cities" :key="index" v-bind:value="city.Id" v-bind:class="{ select: input.city == '' }">
                   {{ city.Name }}
                 </option>
               </select>
@@ -135,8 +135,10 @@ export default {
 }
 select {
   -webkit-appearance: menulist-button;
-  color: #a9a9a9;
   padding-left: 2em !important;
+}
+.select {
+  color: #a9a9a9;
 }
 option:not(:first-of-type) {
   color: black;

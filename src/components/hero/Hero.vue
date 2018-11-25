@@ -6,7 +6,7 @@
             Seelih
           </h1>
           <h2 class="subtitle">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+            The product that you want to rent for is here! Go check them out!!
           </h2>
         </div>
       </div>

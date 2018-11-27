@@ -1,38 +1,89 @@
 <template>
     <section>
         <h1 class="title">My Products</h1>
-        <h2 class="subtitle">Upload Product</h2>
-        <p class="error-message">{{ errorMessage }}</p>
-        <form v-on:submit.prevent class="form-upload">
-            <label for="Name">Product Name</label><br>
-            <input v-model="input.name" type="text" name="Name" class="input" placeholder="Name of Product"><br>
-            <label for="Description">Description</label><br>
-            <textarea v-model="input.description" name="Description" class="input" placeholder="Description of Product" cols="30" rows="5"></textarea><br>
-            <label for="PricePerItemPerDay">Price per Day (Rp)</label><br>
-            <input v-model="input.price" type="number" name="PricePerItemPerDay" class="input price" placeholder="Price per Day"><br>
-            <label for="Name">Product Category</label><br>
-            <select v-model="input.category" class="input" v-bind:class="{ select: input.category == '' }" name="Category">
-                <option value="" disabled hidden class="placeholder">Select the product category</option>
-                <option v-for="(category, index) in categories" :key="index" v-bind:value="category.Id">
-                    {{ category.Name }}
-                </option>
-            </select>
-            <label for="Quantity">Quantity</label><br>
-            <input v-model="input.quantity" type="number" name="Quantity" class="input" placeholder="Quantity"><br>
-            <label for="MinimumBorrowedTime">Minimum Borrowed Time (day)</label><br>
-            <input v-model="input.minimumBorrowedTime" type="number" name="MinimumBorrowedTime" class="input" placeholder="Minimum Borrowed Time (day)"><br>
-            <label for="MaximumBorrowedTime">Maximum Borrowed Time (day)</label><br>
-            <input v-model="input.maximumBorrowedTime" type="number" name="MaximumBorrowedTime" class="input" placeholder="Maximum Borrowed Time (day)"><br>
-            <label for="image">Image for Product</label><br>
-            <input type="file" name="image" ref="image" @change="handleImage()" accept="image/*"><br><br>
-            <button class="button is-success" @click="submitUpload()">Upload Product</button>
-        </form>
+        <div class="content">
+            <el-button type="success" class="btn-new" @click="openModalUpload()">New Product</el-button>
+            <data-tables :data="products" :pagination-props="{ pageSizes: [5, 10, 15] }">
+                <el-table-column v-for="title in columnTitles" :key="title.prop" :prop="title.prop" :label="title.label">
+                </el-table-column>
+                <el-table-column label="Actions" min-width="100px" align="center">
+                    <template slot-scope="scope">
+                        <el-button v-for="button in customActionButton(scope.row)" :key="button.name" @click="button.handler"
+                            :type="button.props.type" :size="button.props.size" style="margin: 5px;">
+                            {{ button.label }}
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </data-tables>
+        </div>
+        <div :class="[ isModalUploadActive ? 'is-active' : '', 'modal' ]">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Upload New Product</p>
+                    <button class="delete" aria-label="close" @click="closeModalUpload()"></button>
+                </header>
+                <section class="modal-card-body">
+                    <p class="error-message">{{ errorMessage }}</p>
+                    <div class="field">
+                        <input v-model="input.name" type="text" name="Name" class="input" placeholder="Name of Product"><br>
+                    </div>
+                    <div class="field">
+                        <textarea v-model="input.description" name="Description" class="input" placeholder="Description of Product" cols="30" rows="5"></textarea><br>
+                    </div>
+                    <div class="field">
+                        <input v-model="input.price" type="number" name="PricePerItemPerDay" class="input price" placeholder="Price per Day"><br>
+                    </div>
+                    <div class="field">
+                        <select v-model="input.category" class="input" v-bind:class="{ select: input.category == '' }" name="Category">
+                            <option value="" disabled hidden class="placeholder">Select the product category</option>
+                            <option v-for="(category, index) in categories" :key="index" v-bind:value="category.Id">
+                                {{ category.Name }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <input v-model="input.quantity" type="number" name="Quantity" class="input" placeholder="Quantity"><br>
+                    </div>
+                    <div class="field">
+                        <input v-model="input.minimumBorrowedTime" type="number" name="MinimumBorrowedTime" class="input" placeholder="Minimum Borrowed Time (day)"><br>
+                    </div>
+                    <div class="field">
+                        <input v-model="input.maximumBorrowedTime" type="number" name="MaximumBorrowedTime" class="input" placeholder="Maximum Borrowed Time (day)"><br>
+                    </div>
+                    <div>
+                        <label for="image">Image for Product</label><br>
+                        <input type="file" name="image" ref="image" @change="handleImage()" accept="image/*"><br><br>
+                    </div>
+                </section>
+                <footer class="modal-card-foot">
+                    <el-button type="success" @click="submitUpload()">Upload Product</el-button>
+                </footer>
+            </div>
+        </div>
+        <div :class="[ isModalImageActive ? 'is-active' : '', 'modal' ]">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Preview Image for {{ rowData == null ? '' : rowData.Name }}</p>
+                    <button class="delete" aria-label="close" @click="closeModalImage()"></button>
+                </header>
+                <section class="modal-card-body">
+                    <div class="field">
+                        <img :src="rowData == null ? '' : rowData.ImageUrl" :alt="rowData == null ? '' : rowData.Name" width="200px">
+                    </div>
+                </section>
+                <footer class="modal-card-foot">
+                </footer>
+            </div>
+        </div>
     </section>
 </template>
 
 <script>
 import { homeUrl } from '../../helper.js';
 const axios = require('axios');
+const moment = require('moment');
 
 export default {
     name: 'my-product',
@@ -41,6 +92,23 @@ export default {
         return {
             products: [],
             categories: [],
+            columnTitles: [{
+                    prop: 'Id',
+                    label: 'Product Id'
+                },
+                {
+                    prop: 'Name',
+                    label: 'Product Name'
+                },
+                {
+                    prop: 'PricePerItemPerDay',
+                    label: 'Price Per Day'
+                },
+                {
+                    prop: 'UploadedTime',
+                    label: 'Upload Time'
+                },
+            ],
             input: {
                 name: '',
                 description: '',
@@ -52,6 +120,9 @@ export default {
                 image: null,
             },
             errorMessage: '',
+            isModalUploadActive: false,
+            isModalImageActive: false,
+            rowData: null,
         };
     },
 
@@ -65,14 +136,47 @@ export default {
         axios.get(homeUrl + 'api/categories')
             .then((response) => {
                 this.categories = response.data.Data;
-            })
-        //   axios.get(homeUrl + 'api/users/' + userLoggedIn.Id + '/orders')
-        //     .then((response) => {
-        //         this.order = response.data.Data;
-        //     }) 
+            });
+        axios.get(homeUrl + 'api/users/' + this.userLoggedIn.Id + '/products')
+            .then((response) => {
+                let self = this;
+                self.products = [];
+                response.data.Data.forEach(element => {
+                   element.UploadedTime = moment(element.UploadedTime).format('LLLL');
+                   self.products.push(element); 
+                });
+            });
     },
 
     methods: {
+        openModalUpload() {
+            this.isModalUploadActive = true;
+        },
+        closeModalUpload() {
+            this.isModalUploadActive = false;
+        },
+        openModalImage() {
+            this.isModalImageActive = true;
+        },
+        closeModalImage() {
+            this.isModalImageActive = false;
+            this.rowData = null;
+        },
+        customActionButton(row) {
+            return [{
+                    props: {
+                        type: 'primary',
+                        size: 'small'
+                    },
+                    label: 'See Image',
+                    handler: _ => {
+                        console.log(row);
+                        this.rowData = this.products.find(product => product.Id == row.Id);
+                        this.openModalImage();
+                    }
+                },
+            ];
+        },
         handleImage() {
             this.input.image = this.$refs.image.files[0];
         },
@@ -133,9 +237,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-section {
-    width: 50%;
-}
 .title {
     font-size: 21px;
     font-weight: bold;
@@ -143,6 +244,9 @@ section {
 .subtitle {
     font-size: 15px;
     font-weight: 500;
+}
+.field {
+    text-align: center;
 }
 input.price[type=number]::-webkit-inner-spin-button, 
 input.price[type=number]::-webkit-outer-spin-button { 
@@ -159,6 +263,8 @@ select {
 option:not(:first-of-type) {
   color: black;
 }
-//     border-radius: 4px;
-// }
+.btn-new {
+    float: right;
+    margin-bottom: 20px;
+}
 </style>

@@ -1,7 +1,7 @@
 <template>
     <section>
         <h1 class="title">My Orders</h1>
-        <data-tables :data="orders" :pagination-props="{ pageSizes: [5, 10, 15] }" style="width: 97%;">
+        <data-tables :data="orders" :pagination-props="{ pageSizes: [5, 10, 15] }">
             <el-table-column v-for="title in columnTitles" :key="title.prop" :prop="title.prop" :label="title.label">
             </el-table-column>
             <el-table-column label="Actions" min-width="100px" align="center">
@@ -40,6 +40,7 @@
         homeUrl
     } from '../../helper.js';
     const axios = require('axios');
+    const moment = require('moment');
 
     export default {
         name: 'my-order',
@@ -186,7 +187,12 @@
             loadOrder() {
                 axios.get(homeUrl + 'api/users/' + this.userLoggedIn.Id + '/orders')
                     .then((response) => {
-                        this.orders = response.data.Data;
+                        let self = this;
+                        self.orders = [];
+                        response.data.Data.forEach(element => {
+                           element.ReturnTime = moment(element.ReturnTime).format('LLLL');
+                           self.orders.push(element);  
+                        });
                     });
             }
         }
